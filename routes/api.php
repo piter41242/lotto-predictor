@@ -1,0 +1,28 @@
+﻿<?php
+
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\LotteryController;
+use App\Http\Controllers\PredictionController;
+use Illuminate\Support\Facades\Route;
+
+// Agrupar todas las rutas con prefijo 'api'
+Route::prefix('api')->group(function () {
+
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
+
+    Route::get('/lotteries', [LotteryController::class, 'index']);
+    Route::get('/lotteries/{lottery}/draws', [LotteryController::class, 'getDraws']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/logout', [AuthController::class, 'logout']);
+        Route::get('/user', [AuthController::class, 'user']);
+        Route::post('/predict', [PredictionController::class, 'generate']);
+        Route::get('/predictions', [PredictionController::class, 'history']);
+    });
+    
+    // Ruta de prueba
+    Route::get('/test', function() {
+        return response()->json(['message' => 'API funcionando!', 'time' => now()]);
+    });
+});
